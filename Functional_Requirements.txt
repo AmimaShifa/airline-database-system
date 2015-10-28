@@ -1,26 +1,19 @@
 1. Create/Reserve flight for Passenger
 2. Delete/Cancel flight for Passenger
-3. Add baggage for Passenger
-4. Cancel baggage for Passenger
-5. See list of passengers for specific flight
-6. See all passengers with baggage for flights
-7. See the average weight of baggage for flights
-8. See the planes with 10+ passengers
-9. See flight with the highest average age of passengers
-10. See the list of flights to specific destination
-11. See the list of ECONOMY class passengers in each airplane
-12. See the list of FIRST class passengers in each airplane
-13. See the list of pilots flying to specific destination (in order of experience)
-14. See pilot with the most passengers on this plane
-15. See flights with the longest duration
-
-List of flights from a specific airplane
-List of flights in a date range (SAME departure date, departure time, arrival time, arrival date)
-List of flights leaving from the same departure airport (in date/time)
-List of flights arriving to the same destination airport (in date/time)
-
-List of flights with pilot who has > 10 years experience
-List of flights from a specific pilot
-
-List of passengers departing from a airport
-List of passengers arriving to a airport
+3. See list of passengers for specific flight
+4. See the planes with 10+ passengers
+5. See flight with the highest average age of passengers
+6. See the list of flights to specific destination
+7. See the list of ECONOMY class passengers in each airplane
+8. See the list of FIRST class passengers in each airplane
+9. See the list of pilots flying to specific destination (in order of experience)
+10. See pilot with the most passengers on this plane
+11. See flights with the longest duration
+12. See the list of flights from a specific airplane
+13. See the list of flights in a date range (SAME departure date, departure time, arrival time, arrival date)
+14. See the list of flights leaving from the same departure airport (in date/time)
+15. See the list of flights arriving to the same destination airport (in date/time)
+16. See the list of flights with pilot who has > 10 years experience
+17. See the list of flights from a specific pilot
+18. See the list of passengers departing from a airport
+19. See the list of passengers arriving to a airport
