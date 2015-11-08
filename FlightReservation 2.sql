@@ -49,7 +49,7 @@ CREATE TABLE Route
     PRIMARY KEY(routeID),
     FOREIGN KEY(airlineID) 				REFERENCES Airline(airlineID),
     FOREIGN KEY(departureAirportID) 	REFERENCES Airport(airportID),
-    FOREIGN KEY(arrivalAiportID) 		REFERENCES Airport(airportID)
+    FOREIGN KEY(arrivalAirportID) 		REFERENCES Airport(airportID)
 );
 
 DROP TABLE IF EXISTS Pilot;
