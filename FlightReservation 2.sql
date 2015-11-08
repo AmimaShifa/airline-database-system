@@ -11,6 +11,8 @@ CREATE TABLE Passenger
     lastName        VARCHAR(45),
     email           VARCHAR(45),
     age             INT,
+    updatedOn timestamp not null on update current_timestamp,
+    
     
     PRIMARY KEY(passengerID)
 );
