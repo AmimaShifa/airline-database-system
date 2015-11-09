@@ -1,7 +1,8 @@
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
  
 public class Main
 {
@@ -37,15 +38,31 @@ public class Main
 	//very rough draft... 
 	//There will be a new tuple in booking with flight = 4
 	//run a query on mysql to verify
-	System.out.println("User Request: Create/Reserve flight for Passenger");
-	CallableStatement cs = connection.prepareCall("{CALL bookFlight(?, ?, ? , ?)}");
-	cs.setInt(1, 4); //flightID =4
-	cs.setInt(2, 1);//first person on seatnum 1
-	cs.setString(3, "Economy");//class is economy
-	cs.setInt(4, 1);
-	ResultSet rs = cs.executeQuery();
-	System.out.println("User Created! Check DB to verify");
-			
+	
+	//Map<seatNum, PassengerID>
+	Map<Integer, Integer> seatMap = new HashMap<Integer, Integer>();
+	Boolean loop = false;
+	while(!loop){
+			System.out.println("User Request: Create/Reserve flight for Passenger");
+			Scanner in = new Scanner(System.in);
+			System.out.print("passengerID?: ");
+			CallableStatement cs = connection.prepareCall("{CALL bookFlight(?, ?, ? , ?)}");
+			int pID = Integer.parseInt(in.nextLine());
+			cs.setInt(4, pID);
+			System.out.print("Class?: ");
+			cs.setString(3, in.nextLine());
+			System.out.print("FlightID?: ");
+			cs.setInt(1, Integer.parseInt(in.nextLine()));
+			System.out.print("SeatNum?: ");
+			int sID = Integer.parseInt(in.nextLine());
+			cs.setInt(2, sID);
+			seatMap.put(sID, pID);
+			ResultSet rs = cs.executeQuery();
+			System.out.println("Booking Created! Check DB to verify. Press X to exit, or N to reserve another flight\n");
+			if(in.nextLine().equals("X")){
+				loop = true;
+			}
+	}		
 	
   }
   
