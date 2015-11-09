@@ -1,0 +1,11 @@
+This will make it easier for us to import the test data into each table for our flight_reservation schema.
+
+How to import csv data on MySQL:
+1) refresh the Schema tab in the 'Navigator' label on the left side. (you should see flight_reservation, if you ran Flight Reservation 2)
+2) Click on Tables (you should should see a list of our table relations)
+3) right click on airline -> Table Data Import Wizard
+4) enter path of test csv for airline (/flightdatabase/CSV data/ Testing Data)
+5) MySQL will populate that relation with info from csv file
+6) Do this for all other relations
+
+I'm not sure if there is a better way to do this, so if there is then tell me pls :D

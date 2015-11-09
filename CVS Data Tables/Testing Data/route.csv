@@ -1,0 +1,6 @@
+ROUTE,,,,
+routeID,airlineID,departureAirportID,destinationAirportID,
+49017,4547,3748,3484,From San Jose to LA by Southwest Airlines
+60206,5331,3748,3484,From San Jose to LA by Virgin America
+16530,1316,3748,3484,From San Jose to LA by AirTran Airways
+24754,2009,3748,3484,From San Jose to LA by Delta Air Lines
