@@ -10,6 +10,7 @@ CREATE TABLE Passenger
     firstName       VARCHAR(45),
     lastName        VARCHAR(45),
     email           VARCHAR(45),
+    password        VARCHAR(45),
     age             INT,
     updatedOn 		TIMESTAMP NOT NULL
     
