@@ -12,9 +12,7 @@ CREATE TABLE Passenger
     email           VARCHAR(45),
     password        VARCHAR(45),
     age             INT,
-    updatedOn 		TIMESTAMP NOT NULL
-    
-    ON UPDATE 		CURRENT_TIMESTAMP,
+
     PRIMARY KEY(passengerID)
 );
 
@@ -76,9 +74,27 @@ CREATE TABLE Flight
     arrivalTime     TIME DEFAULT '00:00:00',
     arrivalDate     DATE DEFAULT '0000-00-00',
     routeID      	INT,
+    updatedOn       TIMESTAMP NOT NULL 
+    ON UPDATE       CURRENT_TIMESTAMP,
     
     PRIMARY KEY(flightID),
     FOREIGN KEY(routeID) 	REFERENCES Route(routeID)   
+    ON UPDATE CASCADE
+);
+
+#This is the archive relation for flights. 
+#Store Procedure archiveFlights will take tuples in flights and add it to flightsarchive
+DROP TABLE IF EXISTS FlightsArchive;
+CREATE TABLE FlightsArchive
+(
+    flightID        INT AUTO_INCREMENT,
+    departureTime   TIME DEFAULT '00:00:00',
+    departureDate   DATE DEFAULT '0000-00-00',
+    arrivalTime     TIME DEFAULT '00:00:00',
+    arrivalDate     DATE DEFAULT '0000-00-00',
+    routeID         INT,
+
+    PRIMARY KEY(flightID)
 );
 
 DROP TABLE IF EXISTS Booking;
@@ -89,10 +105,26 @@ CREATE TABLE Booking
     seatNum         INT,
     class           VARCHAR(45),
     passengerID     INT,
+    updatedOn       TIMESTAMP NOT NULL 
+    ON UPDATE       CURRENT_TIMESTAMP,
     
     PRIMARY KEY(ticketID),
-    FOREIGN KEY(flightID) REFERENCES Flight(flightID),
+    FOREIGN KEY(flightID) REFERENCES Flight(flightID) 
+    ON UPDATE CASCADE,
     FOREIGN KEY(passengerID) REFERENCES Passenger(passengerID)
+    ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS BookingArchive;
+CREATE TABLE BookingArchive
+(
+    ticketID        INT AUTO_INCREMENT,
+    flightID        INT,
+    seatNum         INT,
+    class           VARCHAR(45),
+    passengerID     INT,    
+
+    PRIMARY KEY(ticketID)
 );
 
 DROP TABLE IF EXISTS Flight_Pilot;
@@ -105,36 +137,5 @@ CREATE TABLE Flight_Pilot
     FOREIGN KEY(pilotID) 		REFERENCES Pilot(pilotID)
 );
 
-DROP TRIGGER IF EXISTS DeletePassenger;
-delimiter //
-CREATE TRIGGER DeletePassenger
-AFTER DELETE ON Passenger 
-FOR EACH ROW
-BEGIN
-	DELETE FROM Booking WHERE passengerID = OLD.passengerID;
-END;
-//
-delimiter ;
 
-DROP TRIGGER IF EXISTS DeleteFlight;
-delimiter //
-CREATE TRIGGER DeleteFlight
-AFTER DELETE ON Flight
-FOR EACH ROW
-BEGIN
-	DELETE FROM Booking WHERE flightID = OLD.flightID;
-END;
-//
-delimiter ;
-
-DROP TRIGGER IF EXISTS DeletePilot;
-delimiter //
-CREATE TRIGGER DeletePilot
-AFTER DELETE ON Pilot
-FOR EACH ROW
-BEGIN
-	DELETE FROM flight_pilot WHERE pilotID = OLD.pilotID;
-END; 
-//
-delimiter ;
 
