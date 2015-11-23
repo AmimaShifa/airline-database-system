@@ -154,17 +154,11 @@ BEGIN
 END//
 DELIMITER ;
 
-<<<<<<< HEAD
+
 /*================================================================================
 Delete/Cancel flight from booking(Input: flightID and User_ID )
 =================================================================================*/
 DROP PROCEDURE IF EXISTS cancelFlightReservation;
-=======
--- ----------------------------------
--- Stored procedure to cancel flight
--- -----------------------------------
-DROP PROCEDURE IF EXISTS cancelFlight;
->>>>>>> 2fedb746d0e353772de2d457abb61b726e7289e6
 DELIMITER //
 CREATE PROCEDURE cancelFlightReservation(
 IN Flight_ID INT,
