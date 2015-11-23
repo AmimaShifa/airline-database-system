@@ -39,11 +39,11 @@ DELIMITER ;
 CALL getFlightsByCity('San Jose');
 
 /*=========================================================================
-15. See the list of flights with given origin, destination, and date
+15. Search for flights with given departure city, arrival city, and departure date
 =========================================================================*/
-DROP PROCEDURE IF EXISTS getFlightsByRouteDate;
+DROP PROCEDURE IF EXISTS searchFlightsByRouteDate;
 DELIMITER //
-CREATE PROCEDURE getFlightsByRouteDate(
+CREATE PROCEDURE searchFlightsByRouteDate(
 IN ORIGIN VARCHAR(45), IN DESTINATION VARCHAR(45), IN DATE VARCHAR(45))
 BEGIN
 	SELECT a1.city, departureDate, a1.name as origin, departureTime, 
@@ -59,7 +59,7 @@ BEGIN
 END//
 DELIMITER ;
 
-CALL getFlightsByRouteDate('San Jose', 'Los Angeles', '2015-12-25');
+CALL searchFlightsByRouteDate('San Jose', 'Los Angeles', '2015-12-25');
 
 /*=========================================================================
 16. See the list of airlines that operates from a (city,country) to another (city,country)

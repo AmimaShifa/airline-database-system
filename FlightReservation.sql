@@ -6,14 +6,14 @@ USE Flight_Reservation;
 DROP TABLE IF EXISTs Passenger;
 CREATE TABLE Passenger
 (
-    passengerID     INT AUTO_INCREMENT,
+    userID     		INT AUTO_INCREMENT,
     firstName       VARCHAR(45),
     lastName        VARCHAR(45),
     email           VARCHAR(45),
     password        VARCHAR(45),
     age             INT,
 
-    PRIMARY KEY(passengerID)
+    PRIMARY KEY(userID)
 );
 
 DROP TABLE IF EXISTS Airline;
@@ -104,14 +104,14 @@ CREATE TABLE Booking
     flightID        INT,
     seatNum         INT,
     class           VARCHAR(45),
-    passengerID     INT,
+    userID     		INT,
     updatedAT       TIMESTAMP NOT NULL 
     ON UPDATE       CURRENT_TIMESTAMP,
     
     PRIMARY KEY(ticketID),
     FOREIGN KEY(flightID) REFERENCES Flight(flightID) 
     ON Delete SET NULL,
-    FOREIGN KEY(passengerID) REFERENCES Passenger(passengerID)
+    FOREIGN KEY(userID) REFERENCES Passenger(userID)
     ON Delete SET NULL
 );
 
@@ -122,7 +122,7 @@ CREATE TABLE BookingArchive
     flightID        INT,
     seatNum         INT,
     class           VARCHAR(45),
-    passengerID     INT,    
+    userID     		INT,    
 
     PRIMARY KEY(ticketID)
 );
@@ -138,77 +138,78 @@ CREATE TABLE Flight_Pilot
 );
 
 
-----------------------------------
--- Stored procedure to book flight
------------------------------------
-
+/*================================================================================
+Create/Reserve flight to bookingInput: flightID, seat, class, userID)
+=================================================================================*/
 DROP PROCEDURE IF EXISTS bookFlight;
 DELIMITER //
 CREATE PROCEDURE bookFlight(
 IN Flight_ID INT,
 IN SeatNum_sel VARCHAR(45),
 IN Class_sel VARCHAR(45),
-IN Passenger_ID INT)
+IN User_ID INT)
 BEGIN
-    INSERT INTO Booking (flightID, seatNum, class, passengerID)
-    VALUES(FLight_ID, SeatNum_sel, Class_sel, Passenger_ID);
+	INSERT INTO Booking (flightID, seatNum, class, userID)
+    VALUES(FLight_ID, SeatNum_sel, Class_sel, User_ID);
 END//
 DELIMITER ;
 
-------------------------------------
--- Stored procedure to cancel flight
-------------------------------------
-DROP PROCEDURE IF EXISTS cancelFlight;
+/*================================================================================
+Delete/Cancel flight from booking(Input: flightID and User_ID )
+=================================================================================*/
+DROP PROCEDURE IF EXISTS cancelFlightReservation;
 DELIMITER //
-CREATE PROCEDURE cancelFlight(
+CREATE PROCEDURE cancelFlightReservation(
 IN Flight_ID INT,
-IN SeatNum_sel VARCHAR(45),
-IN Class_sel VARCHAR(45),
-IN Passenger_ID INT)
+IN User_ID INT)
 BEGIN
     DELETE FROM Booking
-    WHERE flightID = FLight_ID AND
-    seatNum = SeatNum_sel AND
-    class = Class_sel AND
-    passengerID = Passenger_ID;
+	WHERE flightID = FLight_ID 
+	AND userID = User_ID;
 END//
 DELIMITER ;
 
-------------------------------------------------------------
+/*================================================================================
 -- Archived function to archive flights before a cutoff time
-------------------------------------------------------------
-DROP PROCEDURE IF EXISTS ArchiveFlights
-delimiter //
-CREATE Procedure ArchiveFlights(IN cutoffTime TIMESTAMP)
-Begin
-start transaction;
-Insert into FlightsArchive
-Select flightID, departureTime, departureDate, arrivalTime, arrivalDate, routeID 
-from Flight where updatedAT < cutoffTime;
-Delete from Flight where updatedAt < cutoffTime; commit; end; //
-delimiter ;
+=================================================================================*/
+DROP PROCEDURE IF EXISTS ArchiveFlights;
+DELIMITER //
+CREATE PROCEDURE ArchiveFlights(IN cutoffTime TIMESTAMP)
+BEGIN
+	START TRANSACTION;
+		INSERT INTO FlightsArchive
+		SELECT flightID, departureTime, departureDate, arrivalTime, arrivalDate, routeID 
+		FROM Flight where updatedAT < cutoffTime;
+		DELETE FROM Flight WHERE updatedAt < cutoffTime; 
+	COMMIT; 
+END//
+DELIMITER ;
 
-----------------------------------------------------------------------------------------
+/*====================================================================================
 -- Trigger to archive bookings before it is deleted as a byproduct of archiving flight
-----------------------------------------------------------------------------------------
-Drop TRIGGER IF EXISTS ArchiveBooking
-delimiter //
-create trigger ArchiveBooking
-before insert on flightsarchive
-for each row
-begin 
-insert into BookingArchive
-    select * from booking where flightID=NEW.flightID; end; //
-delimiter ;
+======================================================================================*/
+DROP TRIGGER IF EXISTS ArchiveBooking
+DELIMITER //
+CREATE TRIGGER ArchiveBooking
+BEFORE INSERT ON flightsarchive
+FOR EACH ROW
+BEGIN
+	INSERT INTO BookingArchive
+    SELECT * FROM booking WHERE flightID=NEW.flightID; 
+END//
+DELIMITER ;
 
-------------------------------------------------------------------------------------------
--- Trigger that checks if a password is bad (under 4 letters), and sets a default password
-------------------------------------------------------------------------------------------
-Drop Trigger if EXISTS BadPassword
-delimiter //
-create trigger BadPassword
-before insert on Passenger
-for each row
-begin
-if LENGTH(NEW.password) < 4  then set new.password = "default"; end if; end; //
-delimiter ;
+/*====================================================================================
+Trigger that checks if a password is bad (under 4 letters), and sets a default password
+=====================================================================================*/
+DROP TRIGGER IF EXISTS BadPassword
+DELIMITER //
+CREATE TRIGGER BadPassword
+BEFORE INSERT ON Passenger
+FOR EACH ROW
+BEGIN
+	IF LENGTH(NEW.password) < 4  
+    THEN SET NEW.password = "default"; 
+    END IF; 
+END//
+DELIMITER ;

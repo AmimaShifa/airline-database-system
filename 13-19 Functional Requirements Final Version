@@ -1,0 +1,23 @@
+/*=========================================================================
+15. Search for flights with given departure city, arrival city, and departure date
+=========================================================================*/
+DROP PROCEDURE IF EXISTS searchFlightsByRouteDate;
+DELIMITER //
+CREATE PROCEDURE searchFlightsByRouteDate(
+IN ORIGIN VARCHAR(45), IN DESTINATION VARCHAR(45), IN DATE VARCHAR(45))
+BEGIN
+	SELECT a1.city, departureDate, a1.name as origin, departureTime, 
+			a2.name as destination, arrivalTime, airline.name as airline
+            
+	FROM flight, route, airport as a1, airport as a2, airline
+	WHERE a1.city = ORIGIN
+    AND a2.city = DESTINATION
+    AND departureDate = DATE
+	AND flight.routeID = route.routeID
+	AND route.departureAirportID = a1.airportID
+	AND route.arrivalAirportID = a2.airportID
+	AND route.airlineID = airline.airlineID;
+END//
+DELIMITER ;
+
+CALL searchFlightsByRouteDate('San Jose', 'Los Angeles', '2015-12-25');
