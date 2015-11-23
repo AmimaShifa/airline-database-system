@@ -137,6 +137,43 @@ CREATE TABLE Flight_Pilot
     FOREIGN KEY(pilotID) 		REFERENCES Pilot(pilotID)
 );
 
+
+----------------------------------
+-- Stored procedure to book flight
+-----------------------------------
+
+DROP PROCEDURE IF EXISTS bookFlight;
+DELIMITER //
+CREATE PROCEDURE bookFlight(
+IN Flight_ID INT,
+IN SeatNum_sel VARCHAR(45),
+IN Class_sel VARCHAR(45),
+IN Passenger_ID INT)
+BEGIN
+    INSERT INTO Booking (flightID, seatNum, class, passengerID)
+    VALUES(FLight_ID, SeatNum_sel, Class_sel, Passenger_ID);
+END//
+DELIMITER ;
+
+------------------------------------
+-- Stored procedure to cancel flight
+------------------------------------
+DROP PROCEDURE IF EXISTS cancelFlight;
+DELIMITER //
+CREATE PROCEDURE cancelFlight(
+IN Flight_ID INT,
+IN SeatNum_sel VARCHAR(45),
+IN Class_sel VARCHAR(45),
+IN Passenger_ID INT)
+BEGIN
+    DELETE FROM Booking
+    WHERE flightID = FLight_ID AND
+    seatNum = SeatNum_sel AND
+    class = Class_sel AND
+    passengerID = Passenger_ID;
+END//
+DELIMITER ;
+
 ------------------------------------------------------------
 -- Archived function to archive flights before a cutoff time
 ------------------------------------------------------------
@@ -164,6 +201,14 @@ insert into BookingArchive
     select * from booking where flightID=NEW.flightID; end; //
 delimiter ;
 
-
-
-
+------------------------------------------------------------------------------------------
+-- Trigger that checks if a password is bad (under 4 letters), and sets a default password
+------------------------------------------------------------------------------------------
+Drop Trigger if EXISTS BadPassword
+delimiter //
+create trigger BadPassword
+before insert on Passenger
+for each row
+begin
+if LENGTH(NEW.password) < 4  then set new.password = "default"; end if; end; //
+delimiter ;
