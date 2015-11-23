@@ -74,12 +74,12 @@ CREATE TABLE Flight
     arrivalTime     TIME DEFAULT '00:00:00',
     arrivalDate     DATE DEFAULT '0000-00-00',
     routeID      	INT,
-    updatedOn       TIMESTAMP NOT NULL 
+    updatedAT       TIMESTAMP NOT NULL 
     ON UPDATE       CURRENT_TIMESTAMP,
     
     PRIMARY KEY(flightID),
     FOREIGN KEY(routeID) 	REFERENCES Route(routeID)   
-    ON UPDATE CASCADE
+    ON DELETE CASCADE
 );
 
 #This is the archive relation for flights. 
@@ -105,14 +105,14 @@ CREATE TABLE Booking
     seatNum         INT,
     class           VARCHAR(45),
     passengerID     INT,
-    updatedOn       TIMESTAMP NOT NULL 
+    updatedAT       TIMESTAMP NOT NULL 
     ON UPDATE       CURRENT_TIMESTAMP,
     
     PRIMARY KEY(ticketID),
     FOREIGN KEY(flightID) REFERENCES Flight(flightID) 
-    ON UPDATE CASCADE,
+    ON Delete SET NULL,
     FOREIGN KEY(passengerID) REFERENCES Passenger(passengerID)
-    ON UPDATE CASCADE
+    ON Delete SET NULL
 );
 
 DROP TABLE IF EXISTS BookingArchive;
@@ -136,6 +136,34 @@ CREATE TABLE Flight_Pilot
     FOREIGN KEY(flightID) 		REFERENCES Flight(flightID),
     FOREIGN KEY(pilotID) 		REFERENCES Pilot(pilotID)
 );
+
+------------------------------------------------------------
+-- Archived function to archive flights before a cutoff time
+------------------------------------------------------------
+DROP PROCEDURE IF EXISTS ArchiveFlights
+delimiter //
+CREATE Procedure ArchiveFlights(IN cutoffTime TIMESTAMP)
+Begin
+start transaction;
+Insert into FlightsArchive
+Select flightID, departureTime, departureDate, arrivalTime, arrivalDate, routeID 
+from Flight where updatedAT < cutoffTime;
+Delete from Flight where updatedAt < cutoffTime; commit; end; //
+delimiter ;
+
+----------------------------------------------------------------------------------------
+-- Trigger to archive bookings before it is deleted as a byproduct of archiving flight
+----------------------------------------------------------------------------------------
+Drop TRIGGER IF EXISTS ArchiveBooking
+delimiter //
+create trigger ArchiveBooking
+before insert on flightsarchive
+for each row
+begin 
+insert into BookingArchive
+    select * from booking where flightID=NEW.flightID; end; //
+delimiter ;
+
 
 
 
