@@ -155,9 +155,9 @@ BEGIN
 END//
 DELIMITER ;
 
-------------------------------------
+-- ----------------------------------
 -- Stored procedure to cancel flight
-------------------------------------
+-- -----------------------------------
 DROP PROCEDURE IF EXISTS cancelFlight;
 DELIMITER //
 CREATE PROCEDURE cancelFlight(
