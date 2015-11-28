@@ -169,8 +169,8 @@ CREATE TABLE `flight_pilot` (
   `pilotID` int(11) DEFAULT NULL,
   KEY `flightID` (`flightID`),
   KEY `pilotID` (`pilotID`),
-  CONSTRAINT `flight_pilot_ibfk_1` FOREIGN KEY (`flightID`) REFERENCES `flight` (`flightID`),
-  CONSTRAINT `flight_pilot_ibfk_2` FOREIGN KEY (`pilotID`) REFERENCES `pilot` (`pilotID`)
+  CONSTRAINT `flight_pilot_ibfk_1` FOREIGN KEY (`flightID`) REFERENCES `flight` (`flightID`) ON DELETE CASCADE,
+  CONSTRAINT `flight_pilot_ibfk_2` FOREIGN KEY (`pilotID`) REFERENCES `pilot` (`pilotID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

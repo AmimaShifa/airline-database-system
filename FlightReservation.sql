@@ -82,21 +82,6 @@ CREATE TABLE Flight
     ON DELETE CASCADE
 );
 
-#This is the archive relation for flights. 
-#Store Procedure archiveFlights will take tuples in flights and add it to flightsarchive
-DROP TABLE IF EXISTS FlightsArchive;
-CREATE TABLE FlightsArchive
-(
-    flightID        INT AUTO_INCREMENT,
-    departureTime   TIME DEFAULT '00:00:00',
-    departureDate   DATE DEFAULT '0000-00-00',
-    arrivalTime     TIME DEFAULT '00:00:00',
-    arrivalDate     DATE DEFAULT '0000-00-00',
-    routeID         INT,
-
-    PRIMARY KEY(flightID)
-);
-
 DROP TABLE IF EXISTS Booking;
 CREATE TABLE Booking
 (
@@ -133,8 +118,10 @@ CREATE TABLE Flight_Pilot
     flightID        INT,
     pilotID         INT,
     
-    FOREIGN KEY(flightID) 		REFERENCES Flight(flightID),
+    FOREIGN KEY(flightID) 		REFERENCES Flight(flightID)
+    ON DELETE CASCADE,
     FOREIGN KEY(pilotID) 		REFERENCES Pilot(pilotID)
+    ON DELETE CASCADE
 );
 
 
@@ -178,7 +165,7 @@ DELIMITER //
 CREATE PROCEDURE ArchiveFlights(IN cutoffTime TIMESTAMP)
 BEGIN
 	START TRANSACTION;
-		INSERT INTO FlightsArchive
+		INSERT INTO FlightsArchive1
 		SELECT flightID, departureTime, departureDate, arrivalTime, arrivalDate, routeID 
 		FROM Flight where updatedAT < cutoffTime;
 		DELETE FROM Flight WHERE updatedAt < cutoffTime; 
@@ -192,7 +179,7 @@ DELIMITER ;
 DROP TRIGGER IF EXISTS ArchiveBooking
 DELIMITER //
 CREATE TRIGGER ArchiveBooking
-BEFORE INSERT ON flightsarchive
+BEFORE INSERT ON flightsarchive1
 FOR EACH ROW
 BEGIN
 	INSERT INTO BookingArchive
