@@ -100,6 +100,20 @@ CREATE TABLE Booking
     ON Delete SET NULL
 );
 
+DROP TABLE IF EXISTS FlightsArchive1;
+CREATE TABLE FlightsArchive1
+(
+    flightID        INT AUTO_INCREMENT,
+    departureTime   TIME DEFAULT '00:00:00',
+    departureDate   DATE DEFAULT '0000-00-00',
+    arrivalTime     TIME DEFAULT '00:00:00',
+    arrivalDate     DATE DEFAULT '0000-00-00',
+    routeID      	INT,
+    updatedAT       TIMESTAMP,
+    
+    PRIMARY KEY(flightID)
+);
+
 DROP TABLE IF EXISTS BookingArchive;
 CREATE TABLE BookingArchive
 (
