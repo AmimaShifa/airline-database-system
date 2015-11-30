@@ -95,9 +95,9 @@ CREATE TABLE Booking
     
     PRIMARY KEY(ticketID),
     FOREIGN KEY(flightID) REFERENCES Flight(flightID) 
-    ON Delete SET NULL,
+    ON Delete CASCADE,
     FOREIGN KEY(userID) REFERENCES Passenger(userID)
-    ON Delete SET NULL
+    ON Delete CASCADE
 );
 
 DROP TABLE IF EXISTS FlightsArchive1;
@@ -121,7 +121,7 @@ CREATE TABLE BookingArchive
     flightID        INT,
     seatNum         INT,
     class           VARCHAR(45),
-    userID     		INT,    
+    userID     		INT,
 
     PRIMARY KEY(ticketID)
 );
@@ -193,13 +193,15 @@ DELIMITER ;
 DROP TRIGGER IF EXISTS ArchiveBooking
 DELIMITER //
 CREATE TRIGGER ArchiveBooking
-BEFORE INSERT ON flightsarchive1
+BEFORE DELETE ON Flight
 FOR EACH ROW
 BEGIN
 	INSERT INTO BookingArchive
-    SELECT * FROM booking WHERE flightID=NEW.flightID; 
+    (SELECT booking.ticketID, booking.flightID, booking.seatNUM, booking.class, booking.userID FROM booking WHERE booking.flightID = OLD.flightID); 
+    Delete From Booking Where flightID is null;
 END//
 DELIMITER ;
+
 
 /*====================================================================================
 Trigger that checks if a password is bad (under 4 letters), and sets a default password

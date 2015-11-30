@@ -147,6 +147,18 @@ CREATE TABLE `flight` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TRIGGER IF EXISTS ArchiveBooking
+DELIMITER //
+CREATE TRIGGER ArchiveBooking
+BEFORE DELETE ON Flight
+FOR EACH ROW
+BEGIN
+	INSERT INTO BookingArchive
+    (SELECT booking.ticketID, booking.flightID, booking.seatNUM, booking.class, booking.userID FROM booking WHERE booking.flightID = OLD.flightID); 
+    DELETE FROM Booking WHERE flightID is null;
+END//
+DELIMITER ;
+
 --
 -- Dumping data for table `flight`
 --
