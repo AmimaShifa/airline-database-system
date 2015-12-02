@@ -24,11 +24,11 @@ public class UserRequests {
 		ResultSet rs = null;
 		Statement statement = null;
 
-		sql = "SELECT FlightID, PassengerCount " +
-				"FROM( SELECT FlightID, COUNT(ticketID) AS PassengerCount  " +
+		sql = "SELECT FlightID, COUNT(ticketID) AS PassengerCount " +
 				"FROM Booking " +
-				"GROUP BY flightID) AS PassengerCount "+
-				"WHERE PassengerCount >= 10";
+				"GROUP BY flightID " + 
+				"HAVING PassengerCount >= 10;";
+				
 		statement = conn.createStatement();
 		rs = statement.executeQuery(sql);
 		return rs;
@@ -319,6 +319,40 @@ public class UserRequests {
 			"SELECT Airline.airlineID, Airline.name, 0 " +
 			"FROM Airline "+
 			"WHERE airlineID NOT IN (SELECT airlineID FROM Route, Flight WHERE Route.airlineID = Route.airlineID);";
+		rs = statement.executeQuery(sql);
+		return rs;
+	}
+
+	//20 correlated subquery
+	public ResultSet getMostExperiencedPilots(Connection conn) throws SQLException{
+		String sql = null;
+		ResultSet rs = null;
+		Statement statement = conn.createStatement();
+
+		sql = "SELECT * " +
+				"FROM Pilot pilot1 " +
+				"WHERE 0 = ( " +
+				"SELECT COUNT(DISTINCT(pilot2.experience)) " +
+				"FROM Pilot pilot2 "
+				"WHERE pilot2.experience > pilot1.experience);";
+
+		rs = statement.executeQuery(sql);
+		return rs;
+	}
+
+	//21 correlated subquery
+	public ResultSet getLeastExperiencedPilots(Connection conn) throws SQLException{
+		String sql = null;
+		ResultSet rs = null;
+		Statement statement = conn.createStatement();
+
+		sql = "SELECT * " +
+				"FROM Pilot pilot1 " +
+				"WHERE 0 = ( " +
+				"SELECT COUNT(DISTINCT(pilot2.experience)) " +
+				"FROM Pilot pilot2 "
+				"WHERE pilot2.experience < pilot1.experience);";
+
 		rs = statement.executeQuery(sql);
 		return rs;
 	}
