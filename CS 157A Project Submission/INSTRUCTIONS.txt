@@ -1,0 +1,7 @@
+1. MOVE the seat.jpg image to the 'bin' folder in your project
+2. Testing User Menu create an account, login, book 2 flights
+(Sample Input - Depart: SAN JOSE, Arrive: LOS ANGELES, departDate: 12/25/2015).
+Then cancel reservation!
+3. For admin functions: login with admin account
+email: admin
+password: admin
